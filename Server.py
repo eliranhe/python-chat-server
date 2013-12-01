@@ -12,17 +12,30 @@ def listen_to_new_connections():
 def listen_to_client_messages():
     while True:
         if clients:
-            read_clients, write_clients, error_client = select.select(clients, [], [], 1)       
-            for client in read_clients:
-                print client
-                message = client.recv(4096)
-                broadcast_message(client, message)
-                
+            try:
+                read_clients, write_clients, error_clients = select.select(clients, clients, [])
+                read_and_broadcast(read_clients, write_clients)
+            except:
+                print "Error!"
 
-def broadcast_message(client, message):
-    for active_client in clients:
-        if active_client != client:
-            pool.apply_async(send_message, (active_client, message))
+def read_and_broadcast(read_clients, write_clients):
+    for client in read_clients:
+        print client
+        try:
+            message = client.recv(4096)
+            print "Message recieved"
+        except: #windows throws exception when connection is closed
+            message = ""
+        if message:
+            broadcast_message(client, message, write_clients)
+        else:
+            client.close()
+            clients.remove(client)    
+
+def broadcast_message(messaged_client, message, write_clients):
+    for client in write_clients:
+        if messaged_client != client:
+            pool.apply_async(send_message, (client, message))
 
 def send_message(client, message):
     client.send(message)
