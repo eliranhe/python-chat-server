@@ -37,7 +37,7 @@ class ChatClient:
                 self.send_message(message)
             except:
                 print "Server not responding. Quitting..."
-                break;
+                self.disconnect()
     
 
     def get_message_from_server(self):
@@ -52,10 +52,20 @@ class ChatClient:
                     self.output.write(message)
                 except:
                     print "Server not responding. Quitting..."
-                    sys.exit(1)
+                    self.disconnect()
                     
 if __name__ == '__main__':        
-    chat_client = ChatClient("localhost", 2023, sys.stdout, sys.stdin)
+    if len(sys.argv) > 1:
+            host = sys.argv[1]
+    else:
+        host = "localhost"
+    
+    if len(sys.argv) > 2:
+        port = int(sys.argv[2])
+    else:
+        port = 2023 
+    
+    chat_client = ChatClient(host, port, sys.stdout, sys.stdin)
     chat_client.start()
     
     while chat_client.active:

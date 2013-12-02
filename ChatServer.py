@@ -76,8 +76,18 @@ class ChatServer:
         client.send(message)
         client.flush()
         
-if __name__ == '__main__':        
-    chat_server = ChatServer("localhost", 2023)
+if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        host = sys.argv[1]
+    else:
+        host = "localhost"
+    
+    if len(sys.argv) > 2:
+        port = int(sys.argv[2])
+    else:
+        port = 2023 
+          
+    chat_server = ChatServer(host, port)
     print "Starting the server"
     chat_server.start()
     
