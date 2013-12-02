@@ -11,8 +11,8 @@ class ChatClient:
         self.input = input_stream
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.host = "localhost"
-        self.port = 2023
+        self.host = host
+        self.port = port
         self.server_socket.connect((host, port))
         
         self.pool = ThreadPool(2)
@@ -69,4 +69,4 @@ if __name__ == '__main__':
     chat_client.start()
     
     while chat_client.active:
-        time.sleep(1000)
+        time.sleep(1)

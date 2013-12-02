@@ -1,4 +1,4 @@
-import socket, sys, select, thread
+import socket, sys, select
 from multiprocessing.pool import ThreadPool
 
 
@@ -11,9 +11,9 @@ class ChatServer:
         self.host = host
         self.port = port
         self.server_socket.bind((host, port))
-        self.server_socket.listen(10)
+        self.server_socket.listen(5)
         
-        self.pool = ThreadPool(100)
+        self.pool = ThreadPool(25)
         self.greeting_message = "User joined to chat. Greet him/her!\r\n"
     
     def start(self):    
@@ -23,10 +23,6 @@ class ChatServer:
     def stop(self):
         if self.active:
             self.active = False
-            try:
-                self.server_socket.shutdown(socket.SHUT_RDWR)
-            except:
-                pass
             self.server_socket.close()
         
     def handle_new_connection(self, conn):
