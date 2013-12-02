@@ -30,6 +30,4 @@ server_socket.connect((host, port))
 pool = ThreadPool(2)
 
 pool.apply_async(listen_to_new_messages)
-pool.apply_async
-
 listen_to_messages_from_user(server_socket)

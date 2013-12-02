@@ -1,13 +1,16 @@
-import socket, sys, select
+import socket, sys, select, thread
 from multiprocessing.pool import ThreadPool
+
+def handle_new_connection(conn):
+    clients.add(conn)
+    print "Added user"
+    broadcast_message(conn, "User joined to chat. Greet him/her!", clients)
 
 def listen_to_new_connections():
     while True:
         conn, addr = server_socket.accept()
-        clients.add(conn)
-        # send_message(conn,"Welcome to my chat server!")
-        # pool.apply_async(send_message, (conn, "Welcome to my chat server!"))
-        print "Connection Recieved!"
+        print "Connection recieved"
+        handle_new_connection(conn)
 
 def listen_to_client_messages():
     while True:
@@ -20,7 +23,6 @@ def listen_to_client_messages():
 
 def read_and_broadcast(read_clients, write_clients):
     for client in read_clients:
-        print client
         try:
             message = client.recv(4096)
             print "Message recieved"
